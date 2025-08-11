@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      # Expose the LocalStack edge port, which provides unified access to all services
+      - "127.0.0.1:4566:4566"
+      # Expose a port range for any external services that LocalStack might need to run
+      - "127.0.0.1:4510-4559:4510-4559"
+    security_opt:
+      # Disable security labels for rootless Podman compatibility
+        - "label=disable"
+    environment:
+      # Set DEBUG=1 to see detailed logs from LocalStack
+      - DEBUG=${DEBUG:-0}
+      # You can specify which services to start to save resources.
+      # Example: SERVICES=s3,iam,sts
+      - SERVICES=
+      # Mount the Docker socket to allow LocalStack to create other containers (e.g., for Lambda)
+      - DOCKER_HOST=unix:///var/run/docker.sock
+    volumes:
+      # Mount a directory on your host to persist LocalStack's state
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      # Mount the container runtime socket from the host.
+      # This is mapped to the conventional Docker socket path inside the container.
+      # For Podman, you must set DOCKER_SOCKET_PATH to your podman.sock location.
+#      - "${DOCKER_SOCKET_PATH:-/var/run/docker.sock}:/var/run/docker.sock"
+
+
