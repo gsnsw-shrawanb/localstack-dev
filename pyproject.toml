@@ -1,0 +1,9 @@
+[project]
+name = "localstack-dev"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "awscli>=1.42.6",
+    "terraform-local>=0.24.1",
+]
